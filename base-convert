@@ -119,6 +119,7 @@ def main():
     string = ""
     inBase = ""
     toBase = ""
+    negative = False
     clean = False
     if len(sys.argv) == 2:
         if sys.argv[1] in ["-h", "--help"]:
@@ -145,6 +146,11 @@ def main():
         clean = True
     else:
         error(1, "Invalid arguments input.")
+
+    if string[0] == "-":
+        negative = True
+        string = string[1:]
+
     inBase = getBase(inBase)
     toBase = getBase(toBase, True)
     verifyStringWithBase(string, inBase)
@@ -158,6 +164,9 @@ def main():
         "binary": bin(int(string)).replace("0b", ""),
         "octal": oct(int(string)).replace("0o", ""),
     }
+    if negative:
+        for key, val in data.items():
+            data[key] = f"-{data[key]}"
     result(data, toBase, clean)
 
 

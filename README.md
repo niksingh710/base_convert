@@ -44,6 +44,7 @@ cd ./base_convert
 chmod +x base-convert
 sudo cp base-convert /usr/local/bin/
 ```
+
 #### TO Remove
 
 ```
@@ -60,5 +61,6 @@ and then rename the file named base-convert to base-convert.py
 then run the script using python.
 
 ## TODO
-- [ ] Handle negative value for conversion
+
+- [x] Handle negative value for conversion
 - [ ] Add Fraction Conversion possibility to.
