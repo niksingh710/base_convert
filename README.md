@@ -44,6 +44,11 @@ cd ./base_convert
 chmod +x base-convert
 sudo cp base-convert /usr/local/bin/
 ```
+#### TO Remove
+
+```
+sudo rm /usr/local/bin/base-convert
+```
 
 After this restart your Terminal app.
 
