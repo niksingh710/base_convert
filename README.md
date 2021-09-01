@@ -44,3 +44,5 @@ cd ./base_convert
 chmod +x base-convert
 sudo cp base-convert /usr/local/bin/
 ```
+
+After this restart your Terminal app.
