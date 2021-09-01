@@ -1,0 +1,160 @@
+#!/usr/bin/python3
+
+import sys
+import re
+import shutil
+import textwrap
+from colorama import Fore, Back, Style
+
+terminalCols = shutil.get_terminal_size().columns
+regChecker = {
+    "decimal": r'^[0-9]+$',
+    "binary": r'^[0-1]+$',
+    "octal": r'^[0-7]+$',
+    "hexadecimal": r'^[0-9A-Fa-f]+$',
+}
+_VERSION = "0.0.1"
+
+
+def centerText(msg, format=False):
+    lines = textwrap.wrap(msg)
+    if not format:
+        return "\n".join(line.strip().center(terminalCols) for line in lines)
+    else:
+        return "\n".join(line.center(terminalCols) for line in lines)
+
+
+def error(code=1, msg="Some Kindda unknow error occurred 💥"):
+    print(centerText(f'{Fore.RED} Error {Style.RESET_ALL}: {msg}'))
+    help(code)
+
+
+def help(code=0):
+    helpMsg = f'''
+
+        |-------------|--------------------------------|
+        |     {Fore.GREEN}Base{Style.RESET_ALL}    |        {Fore.GREEN}Prefixes can be used{Style.RESET_ALL}    |
+        |-------------|--------------------------------|
+        |   {Fore.BLUE}Binary{Style.RESET_ALL}    | {Fore.YELLOW}"Binary", "b", "B", "2", "bin"{Style.RESET_ALL} |
+        | {Fore.BLUE}Hexadecimal{Style.RESET_ALL} | {Fore.YELLOW}"Hexadecimal", "h", "H", "16"{Style.RESET_ALL}  |
+        |   {Fore.BLUE}Decimal{Style.RESET_ALL}   |   {Fore.YELLOW}"Decimal", "d", "D", "2"{Style.RESET_ALL}     |
+        |    {Fore.BLUE}Octal{Style.RESET_ALL}    |    {Fore.YELLOW}"Octal", "o" , "O" ,"8"{Style.RESET_ALL}     |
+        |-------------|--------------------------------|
+
+        This script gives the conversion output of bases.
+
+        {Fore.YELLOW}d-a{Style.RESET_ALL}        : means decimal to all conversion output.
+        {Fore.YELLOW}h-b{Style.RESET_ALL}        : means hexadecimal to binary conversion
+
+        {Fore.YELLOW}-c --clean{Style.RESET_ALL} : this Flag is to be used in the end of command to get clean output.
+
+        {Fore.YELLOW}use{Style.RESET_ALL}        : {Fore.GREEN}`base-convert <value> <valueBase>-<toConverted> <Optional < "-c", "--clean" >>`
+                        `base-convert 123 d-h` <This will give decimal to hexadecimal Conversion>
+                        `base-convert 123 d` <This will give decimal to all Conversion>
+                        `base-convert 123 o` <This will give octal to all Conversion>
+                        `base-convert 123 ` <This will give decimal to all Conversion>.... {Style.RESET_ALL}{Fore.BLUE}etc{Style.RESET_ALL}
+    '''
+    print(helpMsg)
+    sys.exit(code)
+
+
+def getBase(base, toBase=False):
+    if str(base).lower() in ["d", "10", "decimal"]:
+        return "decimal"
+    if str(base).lower() in ["b", "2", "binary", "bin"]:
+        return "binary"
+    if str(base).lower() in ["o", "8", "octal"]:
+        return "octal"
+    if str(base).lower() in ["h", "16", "hexadecimal", "hex"]:
+        return "hexadecimal"
+    if not toBase:
+        if base == "":
+            return "decimal"
+        error(msg=f"Default Base is not a valid base")
+
+    if toBase and base in ["", "a", "all"]:
+        return "all"
+    else:
+        error(msg=f"To be Converted Base is not a valid base")
+
+
+def verifyStringWithBase(string, base):
+    if not re.search(regChecker[base], string):
+        error(1, f"'{string}' is not a {base} type 💥")
+
+
+def getDecimal(string, inBase):
+    if inBase == "hexadecimal":
+        return str(int(string, 16))
+    if inBase == "octal":
+        return str(int(string, 8))
+    if inBase == "binary":
+        return str(int(string, 2))
+
+
+def result(data, toBase, clean=False):
+    res = ""
+    if clean:
+        if toBase == "all":
+            error(1, "Cannot use clean flag with all output")
+        print(data[toBase])
+    else:
+        if toBase == "all":
+            for base in data:
+                name = f'{Fore.BLUE}{base.capitalize()}{Style.RESET_ALL}'.ljust(
+                    20, " ")
+                res += f'{name}: {Fore.YELLOW}{data[base]}{Style.RESET_ALL}\n'
+        else:
+            res = f'{Fore.BLUE}{toBase.capitalize()}{Style.RESET_ALL}: {Fore.YELLOW}{data[toBase]}{Style.RESET_ALL}'
+        print(res.center(terminalCols))
+    sys.exit(0)
+
+
+def main():
+    string = ""
+    inBase = ""
+    toBase = ""
+    clean = False
+    if len(sys.argv) == 2:
+        if sys.argv[1] in ["-h", "--help"]:
+            help()
+        elif sys.argv[1] in ["-v", "--version"]:
+            print(f"base-convert:{_VERSION}")
+            sys.exit(0)
+        else:
+            string = sys.argv[1]
+    elif len(sys.argv) == 3:
+        *_, string, base = sys.argv
+        if len(base.split("-")) == 2:
+            inBase, toBase = base.split("-")
+        else:
+            inBase = base
+            toBase = ""
+    elif len(sys.argv) == 4 and sys.argv[3] in ["--clean", "-c"]:
+        *_, string, base, _ = sys.argv
+        if len(base.split("-")) == 2:
+            inBase, toBase = base.split("-")
+        else:
+            inBase = base
+            toBase = ""
+        clean = True
+    else:
+        error(1, "Invalid arguments input.")
+    inBase = getBase(inBase)
+    toBase = getBase(toBase, True)
+    verifyStringWithBase(string, inBase)
+    if inBase != "decimal":
+        string = getDecimal(string, inBase)
+    # verifyStringWithBase(stringDecimal, "decimal")
+
+    data = {
+        "decimal": string,
+        "hexadecimal": hex(int(string)).replace("0x", ""),
+        "binary": bin(int(string)).replace("0b", ""),
+        "octal": oct(int(string)).replace("0o", ""),
+    }
+    result(data, toBase, clean)
+
+
+if __name__ == '__main__':
+    main()
