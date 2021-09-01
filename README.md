@@ -41,6 +41,6 @@ if Python installation is well and output mathes you are good to go.
 ```
 git clone https://github.com/niksingh710/base_convert.git
 cd ./base_convert
-chmod +x base-convert.py
-sudo mv base-convert.py /usr/local/bin/
+chmod +x base-convert
+sudo cp base-convert /usr/local/bin/
 ```
