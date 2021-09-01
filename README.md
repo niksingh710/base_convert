@@ -34,7 +34,7 @@ If output does not match then try to install python from package manager.
 
 ### UBUNTU/DEBIAN or derivatives
 
-    `sudo apt install python3`
+`sudo apt install python3`
 
 if Python installation is well and output mathes you are good to go.
 
