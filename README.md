@@ -53,3 +53,7 @@ windows user need to clone the repository. or can download the zip file from clo
 and then rename the file named base-convert to base-convert.py
 
 then run the script using python.
+
+## TODO
+- [ ] Handle negative value for conversion
+- [ ] Add Fraction Conversion possibility to.
