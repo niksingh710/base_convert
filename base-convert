@@ -1,5 +1,10 @@
 #!/usr/bin/python3
 
+'''
+Author : niksingh710 (Nikhil Singh)
+gitUrl : https://github.com/niksingh710
+'''
+
 import sys
 import re
 import shutil
