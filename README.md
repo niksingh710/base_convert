@@ -46,3 +46,10 @@ sudo cp base-convert /usr/local/bin/
 ```
 
 After this restart your Terminal app.
+
+## Windows
+
+windows user need to clone the repository. or can download the zip file from clone section.
+and then rename the file named base-convert to base-convert.py
+
+then run the script using python.
